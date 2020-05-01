@@ -51,7 +51,7 @@ function writeCharacter(charCode, buffer, offset) {
 
 function writeString(str, buffer, offset, length) {
   const lowerLimit = offset + (length || 0);
-  const upperLimit = offset + (length || buffer.length);
+  const upperLimit = offset + (length || (buffer ? buffer.length : Infinity));
 
   for (let i = 0; i < str.length; i++) {
     offset = writeCharacter(str.charCodeAt(i), buffer, offset);

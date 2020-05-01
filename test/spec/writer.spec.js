@@ -131,9 +131,12 @@ test('writer', t => {
 });
 
 function testString(t, val) {
+  let offset = 0;
+  offset = writer.writeString(val, null, offset);
+  const buffer = Buffer.alloc(offset);
+  offset = 0;
+  offset = writer.writeString(val, buffer, offset);
   const buf = Buffer.from(val);
-  const buffer = Buffer.alloc(buf.length);
-  const offset = writer.writeString(val, buffer, 0, buffer.length);
   t.is(offset, buf.length);
   t.true(buffer.equals(buf));
 }
