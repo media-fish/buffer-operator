@@ -1,6 +1,6 @@
 function ASSERT(buffer, offset, bytesToRead) {
   if ((buffer.length - offset) < bytesToRead) {
-    throw new Error(`Insufficient buffer: buff.length=${buffer.length}, offset=${offset}`);
+    throw new Error(`Insufficient buffer: buff.length=${buffer.length}, offset=${offset}, bytesToRead=${bytesToRead}`);
   }
 }
 
