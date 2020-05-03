@@ -181,9 +181,18 @@ function readFixedNumber(buffer, offset, length = 4, signed = false) {
   return [offset, result];
 }
 
+function subBuffer(buffer, offset, length = buffer.length - offset) {
+  // console.log(`subBuffer buffer.length=${buffer.length}, offset=${offset}, length=${length}`);
+  if (global && global.Buffer) {
+    return buffer.slice(offset, offset + length);
+  }
+  return new Uint8Array(buffer.buffer.slice(offset, offset + length));
+}
+
 module.exports = {
   readString,
   readNumber,
   readBits,
-  readFixedNumber
+  readFixedNumber,
+  subBuffer
 };

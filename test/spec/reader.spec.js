@@ -155,3 +155,21 @@ test('readBits', t => {
     t.is(value, expected[i - 1]);
   }
 });
+
+function testSubBuffer(t, buf, offset, length) {
+  const sub = reader.subBuffer(buf, offset, length);
+  t.is(sub.length, length);
+  for (const b of sub) {
+    t.is(b, 0xFF);
+  }
+}
+
+test('subBuffer', t => {
+  const buf = Buffer.from([
+    0xFF, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0xFF
+  ]);
+  testSubBuffer(t, buf, 0, 1);
+  testSubBuffer(t, buf, 2, 2);
+  testSubBuffer(t, buf, 5, 3);
+  testSubBuffer(t, buf, 9, 4);
+});
