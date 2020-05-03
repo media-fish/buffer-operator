@@ -57,7 +57,7 @@ Read an integer from the buffer
 | Name     | Type    | Required | Default | Description   |
 | -------- | ------- | -------- | ------- | ------------- |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer from which the data is read |
-| `offset` | number  | Yes      | N/A     | An integer to specify the position in the buffer |
+| `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
 | `length` | number  | No       | 4       | An integer to specify how many bytes to be read |
 | `signed` | boolean | No       | false   | Set `true` to read a negative number |
 
@@ -75,7 +75,7 @@ Read a string from the buffer
 | Name     | Type    | Required | Default | Description   |
 | -------- | ------- | -------- | ------- | ------------- |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer from which the data is read |
-| `offset` | number  | Yes      | N/A     | An integer to specify the position in the buffer |
+| `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
 | `length` | number  | No       | `buffer.length - offset` | An integer to specify how many bytes to be read |
 | `nullTerminated` | boolean | No       | false   | Set `true` to stop reading when encountering zero |
 
@@ -94,7 +94,7 @@ Write an integer to the buffer
 | -------- | ------- | -------- | ------- | ------------- |
 | `value`  | number  | Yes      | N/A     | The value to be written to the buffer |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer to which the data is written |
-| `offset` | number  | Yes      | N/A     | An integer to specify the position in the buffer |
+| `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
 | `length` | number  | No       | 4       | An integer to specify how many bytes to be written |
 
 #### return value
@@ -108,7 +108,7 @@ Write a string to the buffer
 | -------- | ------- | -------- | ------- | ------------- |
 | `value`  | string  | Yes      | N/A     | The value to be written to the buffer |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer to which the data is written |
-| `offset` | number  | Yes      | N/A     | An integer to specify the position in the buffer |
+| `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
 | `length` | number  | No       | undefined | An integer to specify how many bytes to be written. If not specified, the data is written until the end of the buffer |
 
 #### return value

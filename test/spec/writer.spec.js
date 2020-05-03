@@ -157,6 +157,12 @@ test('writeString', t => {
   offset = writer.writeString('abcdef', buffer, 0);
   t.is(offset, buf.length);
   t.true(buffer.equals(buf));
+
+  buf = Buffer.from([0x61, 0x62, 0x63]);
+  buffer = Buffer.alloc(buf.length);
+  offset = writer.writeString('abcdef', buffer, buffer.length);
+  t.is(offset, 6);
+  t.false(buffer.equals(buf));
 });
 
 test('writeBits', t => {

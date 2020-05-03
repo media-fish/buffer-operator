@@ -1,6 +1,6 @@
 function writeByte(byte, buffer, offset, mask = 0xFF, or = false) {
   // console.log(`writeByte: byte=${byte.toString(2)}, offset=${offset}, mask=${mask.toString(2)}, or=${or}`);
-  if (buffer) {
+  if (buffer && offset < buffer.length) {
     if (or) {
       buffer[offset] |= (byte & mask);
     } else {
