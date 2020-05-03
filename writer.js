@@ -150,9 +150,27 @@ function writeFixedNumber(num, buffer, offset, length = 4) {
   return offset;
 }
 
+function copyBuffer(src, srcOffset, dst, dstOffset, length = src.length - srcOffset) {
+  if (!dst) {
+    return dstOffset + length;
+  }
+
+  if (global && global.Buffer) {
+    src.copy(dst, dstOffset, srcOffset, srcOffset + length);
+  } else {
+    // src = new Uint8Array(src.buffer.slice(srcOffset, srcOffset + length));
+    // dst.set(newSrc, dstOffset);
+    for (let i = srcOffset, j = dstOffset; i < srcOffset + length; i++, j++) {
+      dst[j] = src[i];
+    }
+  }
+  return dstOffset + length;
+}
+
 module.exports = {
   writeString,
   writeNumber,
   writeBits,
-  writeFixedNumber
+  writeFixedNumber,
+  copyBuffer
 };

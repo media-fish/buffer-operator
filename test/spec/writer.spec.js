@@ -199,3 +199,25 @@ test('writeBits', t => {
     t.is(buf[i], expected[i]);
   }
 });
+
+test('copy', t => {
+  const src = Buffer.from([
+    0xFF, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0xFF
+  ]);
+  const dst = Buffer.alloc(10);
+  let srcOffset = 0, dstOffset = 0;
+  dstOffset = writer.copyBuffer(src, srcOffset, dst, dstOffset, 1);
+  t.is(dstOffset, 1);
+  srcOffset = 2;
+  dstOffset = writer.copyBuffer(src, srcOffset, dst, dstOffset, 2);
+  t.is(dstOffset, 3);
+  srcOffset = 5;
+  dstOffset = writer.copyBuffer(src, srcOffset, dst, dstOffset, 3);
+  t.is(dstOffset, 6);
+  srcOffset = 9;
+  dstOffset = writer.copyBuffer(src, srcOffset, dst, dstOffset);
+  t.is(dstOffset, 10);
+  for (const b of dst) {
+    t.is(b, 0xFF);
+  }
+});

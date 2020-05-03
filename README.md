@@ -58,7 +58,7 @@ Read an integer from the buffer
 | -------- | ------- | -------- | ------- | ------------- |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer from which the data is read |
 | `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
-| `length` | number  | No       | 4       | An integer to specify how many bytes to be read |
+| `length` | number  | No       | 4       | An integer to specify how many bytes to read |
 | `signed` | boolean | No       | false   | Set `true` to read a negative number |
 
 #### return value
@@ -76,7 +76,7 @@ Read a string from the buffer
 | -------- | ------- | -------- | ------- | ------------- |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer from which the data is read |
 | `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
-| `length` | number  | No       | `buffer.length - offset` | An integer to specify how many bytes to be read |
+| `length` | number  | No       | `buffer.length - offset` | An integer to specify how many bytes to read |
 | `nullTerminated` | boolean | No       | false   | Set `true` to stop reading when encountering zero |
 
 #### return value
@@ -85,6 +85,19 @@ An array containing the following pair of values
 | ----- | ------ | ------------ |
 | [0]   | number | An integer to indicate the position from which the next data should be read |
 | [1]   | string | The read value |
+
+### `reader.subBuffer(buffer, offset[, length])`
+Create a sub buffer from the original one.
+
+#### params
+| Name     | Type    | Required | Default | Description   |
+| -------- | ------- | -------- | ------- | ------------- |
+| `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer from which the sub buffer is extracted |
+| `offset` | number  | Yes      | N/A     | An integer to specify the position within the original buffer |
+| `length` | number  | No       | `buffer.length - offset` | An integer to specify how many bytes to extract |
+
+#### return value
+The created sub buffer
 
 ### `writer.writeNumber(value, buffer, offset[, length])`
 Write an integer to the buffer
@@ -95,10 +108,10 @@ Write an integer to the buffer
 | `value`  | number  | Yes      | N/A     | The value to be written to the buffer |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer to which the data is written |
 | `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
-| `length` | number  | No       | 4       | An integer to specify how many bytes to be written |
+| `length` | number  | No       | 4       | An integer to specify how many bytes to write |
 
 #### return value
-An integer to indicate the position from which the next data should be read
+An integer to indicate the position to which the next data should be written
 
 ### `writer.writeString(value, buffer, offset[, length])`
 Write a string to the buffer
@@ -109,7 +122,22 @@ Write a string to the buffer
 | `value`  | string  | Yes      | N/A     | The value to be written to the buffer |
 | `buffer` | `Buffer` or `Uint8Array` | Yes | N/A | The buffer to which the data is written |
 | `offset` | number  | Yes      | N/A     | An integer to specify the position within the buffer |
-| `length` | number  | No       | undefined | An integer to specify how many bytes to be written. If not specified, the data is written until the end of the buffer |
+| `length` | number  | No       | undefined | An integer to specify how many bytes to write. If not specified, the data is written until the end of the buffer |
 
 #### return value
-An integer to indicate the position from which the next data should be read
+An integer to indicate the position to which the next data should be written
+
+### `writer.copyBuffer(src, srcOffset, dst, dstOffset[, length])`
+Copy data from the `src` buffer to `dst` buffer
+
+#### params
+| Name        | Type    | Required | Default | Description   |
+| ----------- | ------- | -------- | ------- | ------------- |
+| `src`       | `Buffer` or `Uint8Array` | Yes | N/A | The source buffer from which the data is copied |
+| `srcOffset` | number  | Yes      | N/A     | An integer to specify the position within the source buffer |
+| `dst`       | `Buffer` or `Uint8Array` | Yes | N/A | The destination buffer to which the data is copied |
+| `dstOffset` | number  | Yes      | N/A     | An integer to specify the position within the destination buffer |
+| `length`    | number  | No       | `src.length - srcOffset` | An integer to specify how many bytes to copy. |
+
+#### return value
+An integer to indicate the position within the `dst` buffer to which the next data should be written
