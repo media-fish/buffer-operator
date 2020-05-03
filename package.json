@@ -1,6 +1,6 @@
 {
   "name": "@mediafish/buffer-operator",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A library to read/write byte arrays",
   "main": "index.js",
   "scripts": {
