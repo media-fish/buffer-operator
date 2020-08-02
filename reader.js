@@ -1,7 +1,26 @@
-function ASSERT(buffer, offset, bytesToRead) {
-  if ((buffer.length - offset) < bytesToRead) {
-    throw new Error(`Insufficient buffer: buff.length=${buffer.length}, offset=${offset}, bytesToRead=${bytesToRead}`);
+let options = {};
+
+function THROW(err) {
+  if (!options.strictMode) {
+    return console.error(err.message);
   }
+  throw err;
+}
+
+function TEST(buffer, offset, bytesToRead) {
+  if ((buffer.length - offset) < bytesToRead) {
+    THROW(`Insufficient buffer: buff.length=${buffer.length}, offset=${offset}, bytesToRead=${bytesToRead}`);
+    return false;
+  }
+  return true;
+}
+
+function setOptions(newOptions = {}) {
+  options = Object.assign(options, newOptions);
+}
+
+function getOptions() {
+  return Object.assign({}, options);
 }
 
 function isNegative(value, bitLength) {
@@ -57,7 +76,9 @@ function readCharacter(buffer, offset) {
 }
 
 function readString(buffer, offset, length = buffer.length - offset, nullTerminated = false) {
-  ASSERT(buffer, offset, length);
+  if (!TEST(buffer, offset, length)) {
+    return [Math.min(offset + length, buffer.length), ''];
+  }
 
   const limit = offset + length;
   let ch, str = '';
@@ -74,7 +95,9 @@ function readString(buffer, offset, length = buffer.length - offset, nullTermina
 }
 
 function readNumber(buffer, offset, length = 4, signed = false, safeLimit = true) {
-  ASSERT(buffer, offset, length);
+  if (!TEST(buffer, offset, length)) {
+    return [Math.min(offset + length, buffer.length), Number.NaN];
+  }
 
   let left = 0, right = 0, i, negative, result;
 
@@ -146,7 +169,9 @@ function readBits(buffer, bitOffset, bitsToRead) {
 }
 
 function readFixedNumber(buffer, offset, length = 4, signed = false) {
-  ASSERT(buffer, offset, length);
+  if (!TEST(buffer, offset, length)) {
+    return [Math.min(offset + length, buffer.length), Number.NaN];
+  }
 
   const halfBitsNum = Math.min(length, 8) * 8 / 2;
 
@@ -194,5 +219,7 @@ module.exports = {
   readNumber,
   readBits,
   readFixedNumber,
-  subBuffer
+  subBuffer,
+  setOptions,
+  getOptions
 };

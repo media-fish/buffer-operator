@@ -99,6 +99,25 @@ Create a sub buffer from the original one.
 #### return value
 The created sub buffer
 
+### `reader.setOptions(obj)`
+Updates the option values
+
+#### params
+| Name    | Type   | Required | Default | Description   |
+| ------- | ------ | -------- | ------- | ------------- |
+| obj     | Object | Yes      | {}     | An object holding option values which will be used to overwrite the internal option values.  |
+
+##### supported options
+| Name       | Type    | Default | Description   |
+| ---------- | ------- | ------- | ------------- |
+| `strictMode` | boolean | false   | If true, the function throws an error when the method invocations failed. If false, the function just logs the error and continues to run.|
+
+### `HLS.getOptions()`
+Retrieves the current option values
+
+#### return value
+A cloned object containing the current option values
+
 ### `writer.writeNumber(value, buffer, offset[, length])`
 Write an integer to the buffer
 

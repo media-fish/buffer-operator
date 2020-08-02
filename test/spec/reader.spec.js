@@ -173,3 +173,49 @@ test('subBuffer', t => {
   testSubBuffer(t, buf, 5, 3);
   testSubBuffer(t, buf, 9, 4);
 });
+
+test('strictMode', t => {
+  const buf = Buffer.from([0xFF, 0xFF]);
+  let opt;
+
+  try {
+    let offset, value;
+    [offset, value] = reader.readString(buf, 0, 3);
+    t.is(offset, 2);
+    t.is(value, '');
+    [offset, value] = reader.readNumber(buf, 1, 2);
+    t.is(offset, 2);
+    t.true(Number.isNaN(value));
+  } catch {
+    t.fail('strictMode should be disabled by default');
+  }
+
+  reader.setOptions({strictMode: true});
+  opt = reader.getOptions();
+  t.true(opt.strictMode);
+
+  try {
+    reader.readString(buf, 2, 1);
+    t.fail('An error should be thrown when strictMode is enabled');
+  } catch (e) {
+    t.truthy(e);
+  }
+
+  reader.setOptions({strictMode: false});
+  opt = reader.getOptions();
+  t.false(opt.strictMode);
+
+  try {
+    let offset, value;
+    [offset, value] = reader.readString(buf, 2, 1);
+    t.is(offset, 2);
+    t.is(value, '');
+    [offset, value] = reader.readNumber(buf, 3, 1);
+    t.is(offset, 2);
+    t.true(Number.isNaN(value));
+  } catch {
+    t.fail('An error should not be thrown when strictMode is disabled');
+  }
+
+  t.pass();
+});
