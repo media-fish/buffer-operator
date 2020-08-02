@@ -112,7 +112,7 @@ Updates the option values
 | ---------- | ------- | ------- | ------------- |
 | `strictMode` | boolean | false   | If true, the function throws an error when the method invocations failed. If false, the function just logs the error and continues to run.|
 
-### `HLS.getOptions()`
+### `reader.getOptions()`
 Retrieves the current option values
 
 #### return value
