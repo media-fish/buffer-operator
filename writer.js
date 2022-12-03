@@ -13,36 +13,36 @@ function writeCharacter(charCode, buffer, offset) {
   if (charCode < 0x80) {
     // 1 byte
     writeByte(charCode, buffer, offset++);
-  } else if (charCode >= 0x80 && charCode < 0x800) {
+  } else if (charCode >= 0x80 && charCode < 0x8_00) {
     // 2 bytes
     writeByte(0xC0 | ((charCode >> 6) & 0x1F), buffer, offset++);
-    writeByte(0x80 | ((charCode >> 0) & 0x3F), buffer, offset++);
-  } else if (charCode >= 0x800 && charCode < 0x10000) {
+    writeByte(0x80 | (charCode & 0x3F), buffer, offset++);
+  } else if (charCode >= 0x8_00 && charCode < 0x1_00_00) {
     // 3 bytes
     writeByte(0xE0 | ((charCode >> 12) & 0x0F), buffer, offset++);
     writeByte(0x80 | ((charCode >> 6) & 0x3F), buffer, offset++);
-    writeByte(0x80 | ((charCode >> 0) & 0x3F), buffer, offset++);
-  } else if (charCode >= 0x10000 && charCode < 0x200000) {
+    writeByte(0x80 | (charCode & 0x3F), buffer, offset++);
+  } else if (charCode >= 0x1_00_00 && charCode < 0x20_00_00) {
     // 4 bytes
     writeByte(0xF0 | ((charCode >> 18) & 0x07), buffer, offset++);
     writeByte(0x80 | ((charCode >> 12) & 0x3F), buffer, offset++);
     writeByte(0x80 | ((charCode >> 6) & 0x3F), buffer, offset++);
-    writeByte(0x80 | ((charCode >> 0) & 0x3F), buffer, offset++);
-  } else if (charCode >= 0x200000 && charCode < 0x4000000) {
+    writeByte(0x80 | (charCode & 0x3F), buffer, offset++);
+  } else if (charCode >= 0x20_00_00 && charCode < 0x4_00_00_00) {
     // 5 bytes
     writeByte(0xF8 | ((charCode >> 24) & 0x03), buffer, offset++);
     writeByte(0x80 | ((charCode >> 18) & 0x3F), buffer, offset++);
     writeByte(0x80 | ((charCode >> 12) & 0x3F), buffer, offset++);
     writeByte(0x80 | ((charCode >> 6) & 0x3F), buffer, offset++);
-    writeByte(0x80 | ((charCode >> 0) & 0x3F), buffer, offset++);
-  } else if (charCode >= 0x4000000 && charCode < 0x80000000) {
+    writeByte(0x80 | (charCode & 0x3F), buffer, offset++);
+  } else if (charCode >= 0x4_00_00_00 && charCode < 0x80_00_00_00) {
     // 6 bytes
     writeByte(0xFC | ((charCode >> 30) & 0x01), buffer, offset++);
     writeByte(0x80 | ((charCode >> 24) & 0x3F), buffer, offset++);
     writeByte(0x80 | ((charCode >> 18) & 0x3F), buffer, offset++);
     writeByte(0x80 | ((charCode >> 12) & 0x3F), buffer, offset++);
     writeByte(0x80 | ((charCode >> 6) & 0x3F), buffer, offset++);
-    writeByte(0x80 | ((charCode >> 0) & 0x3F), buffer, offset++);
+    writeByte(0x80 | (charCode & 0x3F), buffer, offset++);
   } else {
     console.error('Writer.writeCharacter: Invalid char code - ' + charCode);
   }
@@ -51,10 +51,10 @@ function writeCharacter(charCode, buffer, offset) {
 
 function writeString(str, buffer, offset, length) {
   const lowerLimit = offset + (length || 0);
-  const upperLimit = offset + (length || (buffer ? buffer.length : Infinity));
+  const upperLimit = offset + (length || (buffer ? buffer.length : Number.POSITIVE_INFINITY));
 
   for (let i = 0; i < str.length; i++) {
-    offset = writeCharacter(str.charCodeAt(i), buffer, offset);
+    offset = writeCharacter(str.codePointAt(i), buffer, offset);
     if (offset > upperLimit) {
       offset = upperLimit;
       break;
@@ -69,8 +69,8 @@ function writeString(str, buffer, offset, length) {
 }
 
 function writeNumber(num, buffer, offset, length = 4) {
-  const left = num / 4294967296;
-  const right = num % 4294967296;
+  const left = num / 4_294_967_296;
+  const right = num % 4_294_967_296;
 
   let byte, i;
 
@@ -135,10 +135,10 @@ function writeFixedNumber(num, buffer, offset, length = 4) {
 
   bitOffset = writeBits(left, buffer, offset * 8 + bitOffset, halfBitsNum);
 
-  if (halfBitsNum === 28 && right >= 0.9999999) { // ugly
-    right = 0xFFFFFFFF;
-  } else if (halfBitsNum === 32 && right >= 0.999999) { // ugly
-    right = 0xFFFFFFFF;
+  if (halfBitsNum === 28 && right >= 0.999_999_9) { // ugly
+    right = 0xFF_FF_FF_FF;
+  } else if (halfBitsNum === 32 && right >= 0.999_999) { // ugly
+    right = 0xFF_FF_FF_FF;
   } else {
     right = Math.round(right * (2 ** halfBitsNum));
   }
@@ -154,7 +154,7 @@ function copyBuffer(src, srcOffset, dst, dstOffset, length = src.length - srcOff
   if (!dst) {
     return dstOffset + length;
   }
-
+  /* eslint n/prefer-global/buffer: [error] */
   if (global && global.Buffer) {
     src.copy(dst, dstOffset, srcOffset, srcOffset + length);
   } else {
@@ -167,10 +167,12 @@ function copyBuffer(src, srcOffset, dst, dstOffset, length = src.length - srcOff
   return dstOffset + length;
 }
 
-module.exports = {
+const writer = {
   writeString,
   writeNumber,
   writeBits,
   writeFixedNumber,
-  copyBuffer
+  copyBuffer,
 };
+
+export default writer;
