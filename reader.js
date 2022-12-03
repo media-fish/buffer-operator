@@ -72,7 +72,7 @@ function readCharacter(buffer, offset) {
     console.error('Reader.readCharacter: Invalid char code - ' + firstByte);
     return [offset, null];
   }
-  return [offset, charCode ? String.fromCharCode(charCode) : null];
+  return [offset, charCode ? String.fromCodePoint(charCode) : null];
 }
 
 function readString(buffer, offset, length = buffer.length - offset, nullTerminated = false) {
@@ -109,7 +109,7 @@ function readNumber(buffer, offset, length = 4, signed = false, safeLimit = true
     }
     left >>>= 0;
     negative = isNegative(left, (length - 4) * 8);
-    left *= 4294967296;
+    left *= 4_294_967_296;
     length = 4;
   }
 
@@ -131,11 +131,7 @@ function readNumber(buffer, offset, length = 4, signed = false, safeLimit = true
   }
 
   if (safeLimit) {
-    if (result < 0) {
-      result = Math.max(result, Number.MIN_SAFE_INTEGER);
-    } else {
-      result = Math.min(result, Number.MAX_SAFE_INTEGER);
-    }
+    result = (result < 0) ? Math.max(result, Number.MIN_SAFE_INTEGER) : Math.min(result, Number.MAX_SAFE_INTEGER);
   }
 
   return [offset, result];
@@ -182,16 +178,14 @@ function readFixedNumber(buffer, offset, length = 4, signed = false) {
 
   [bitOffset, left] = readBits(buffer, offset * 8 + bitOffset, halfBitsNum);
 
-  if (signed) {
-    if (isNegative(left, halfBitsNum)) {
-      left = convertToNegative(left, halfBitsNum);
-    }
+  if (signed && isNegative(left, halfBitsNum)) {
+    left = convertToNegative(left, halfBitsNum);
   }
 
   [bitOffset, right] = readBits(buffer, bitOffset, halfBitsNum);
   offset = Math.floor(bitOffset / 8);
 
-  right /= (halfBitsNum === 32 ? 4294967296 : (1 << halfBitsNum));
+  right /= (halfBitsNum === 32 ? 4_294_967_296 : (1 << halfBitsNum));
 
   if (left < 0) {
     left = Math.max(left, Number.MIN_SAFE_INTEGER);
@@ -208,18 +202,21 @@ function readFixedNumber(buffer, offset, length = 4, signed = false) {
 
 function subBuffer(buffer, offset, length = buffer.length - offset) {
   // console.log(`subBuffer buffer.length=${buffer.length}, offset=${offset}, length=${length}`);
-  if (global && global.Buffer) {
+  /* eslint n/prefer-global/buffer: [error] */
+  if (global && typeof global.Buffer === 'function') {
     return buffer.slice(offset, offset + length);
   }
   return new Uint8Array(buffer.buffer.slice(offset, offset + length));
 }
 
-module.exports = {
+const reader = {
   readString,
   readNumber,
   readBits,
   readFixedNumber,
   subBuffer,
   setOptions,
-  getOptions
+  getOptions,
 };
+
+export default reader;

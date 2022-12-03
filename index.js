@@ -1,4 +1,2 @@
-const reader = require('./reader');
-const writer = require('./writer');
-
-module.exports = {reader, writer};
+export {reader} from './reader.js';
+export {writer} from './writer.js';
